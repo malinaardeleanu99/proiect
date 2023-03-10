@@ -21,4 +21,5 @@ type Foaie struct {
 	Observatii    string
 	Status        string
 	Curse         []Cursa `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL; ForeignKey:FoaieID;"`
+	Autor         uint
 }

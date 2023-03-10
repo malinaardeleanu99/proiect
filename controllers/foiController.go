@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"example/API/initializers"
+	"example/API/middleware"
 	"example/API/models"
 	"time"
 
@@ -60,6 +61,8 @@ func FoiCreate(c *gin.Context) {
 		CurseParsed = append(CurseParsed, cursa)
 	}
 
+	userID := middleware.CheckUser(c)
+
 	//create foaie
 	foaie := models.Foaie{Data: data_parsed,
 		Sofer:         body.Sofer,
@@ -74,6 +77,7 @@ func FoiCreate(c *gin.Context) {
 		Observatii:    body.Observatii,
 		Status:        body.Status,
 		Curse:         CurseParsed,
+		Autor:         userID,
 	}
 
 	result := initializers.DB.Create(&foaie)
@@ -94,6 +98,28 @@ func FoiIndex(c *gin.Context) {
 	var foi []models.Foaie
 	var curse []models.Cursa
 	initializers.DB.Find(&foi)
+
+	for i := 0; i < len(foi); i++ {
+		id := foi[i].ID
+		initializers.DB.Find(&curse, "foaie_id = ?", id)
+		foi[i].Curse = curse
+		curse = nil
+	}
+
+	//respond
+	c.JSON(200, gin.H{
+		"foi": foi,
+	})
+}
+
+func FoiUserIndex(c *gin.Context) {
+	//get the foi
+	var foi []models.Foaie
+	var curse []models.Cursa
+
+	userID := middleware.CheckUser(c)
+
+	initializers.DB.Find(&foi, "autor = ?", userID)
 
 	for i := 0; i < len(foi); i++ {
 		id := foi[i].ID

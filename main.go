@@ -20,7 +20,7 @@ func main() {
 	r.POST("/login", controllers.Login)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.POST("/foi", middleware.RequireAuth, controllers.FoiCreate)
-	r.GET("/foi", middleware.RequireAuth, controllers.FoiIndex)
+	r.GET("/foi", middleware.RequireAuth, controllers.FoiUserIndex)
 	r.GET("/foi/:ID", middleware.RequireAuth, controllers.FoiShow)
 	r.PUT("/foi/:ID", middleware.RequireAuth, controllers.FoaieUpdate)
 	r.DELETE("/foi/:ID", middleware.RequireAuth, controllers.FoiDelete)
